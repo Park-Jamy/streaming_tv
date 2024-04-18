@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -42,29 +44,26 @@ class BasicControllerTest {
     @Test
     void basicTest() throws Exception {
 
-//        MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
-//
-//        info.add("name", "");
-//
-//        mockMvc.perform(get("/basic")
-//                        .params(info))    // 1, 2
-//
-//        //.andDo(print())
-//                .andExpect(status().isOk());
+        MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
+
+        info.add("name", "");
+
+        mockMvc.perform(get("/basic")
+                        .params(info))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("/basic post 처리")
     @Test
     void saveFileTest() throws Exception {
         MultiValueMap<String, String> info = new LinkedMultiValueMap<>();
-        MockMultipartFile multipartFile = new MockMultipartFile("test.xlsx", new FileInputStream(new File("/home/admin/test.xlsx")));
+        MockMultipartFile multipartFile = new MockMultipartFile("images.jpeg", new FileInputStream(new File("video/images.jpeg")));
 
 
         info.add("desc", "qwe");
         //when
         mockMvc.perform(
-                        multipart("/basic").file(multipartFile)    // 1, 2
-                        .params(info))
+                        multipart("/basic").file(multipartFile).params(info))
                 .andExpect(status().isOk());
     }
 }
