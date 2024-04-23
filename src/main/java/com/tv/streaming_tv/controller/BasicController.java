@@ -19,9 +19,9 @@ public class BasicController {
     }
 
     // 파일 업로드
-
+    @ResponseBody
     @PostMapping("/basic")
-    public String saveFile(@RequestParam(name = "file", required=false) MultipartFile file,
+    public String saveFile(@RequestParam("file") MultipartFile file,
                            @RequestParam("desc") String description) {
 
         basicService.saveFile(file);

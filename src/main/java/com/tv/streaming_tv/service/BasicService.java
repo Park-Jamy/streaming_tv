@@ -15,10 +15,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
-public interface BasicService {
+public class BasicService {
 
-    public BasicService() throws Exception;;
+    public void saveFile(MultipartFile file) {
+        if (!file.isEmpty()) {
+            // 파일을 저장할 path
+            // project root path 밑에 video 디렉토리에 저장
+            Path filepath = Paths.get("video", file.getOriginalFilename());
 
-    public default void saveFile(MultipartFile file) {
+            // 해당 path 에 파일의 스트림 데이터를 저장
+            try (OutputStream os = Files.newOutputStream(filepath)) {
+                os.write(file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
