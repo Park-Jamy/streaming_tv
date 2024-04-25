@@ -66,4 +66,5 @@ class BasicControllerTest {
                         multipart("/basic").file(multipartFile).params(info))
                 .andExpect(status().isOk());
     }
+
 }

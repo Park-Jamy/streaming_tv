@@ -2,6 +2,7 @@ package com.tv.streaming_tv.controller;
 
 import com.tv.streaming_tv.service.ChunkUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ public class ChunkUploadController {
 
     @ResponseBody
     @PostMapping("/chunk/upload")
-    public ResponseEntity<String> chunkUpload(@RequestParam("chunk") MultipartFile file,
+    public ResponseEntity<String> chunkUpload(@RequestParam(name = "chunk", required = false) MultipartFile file,
                                               @RequestParam("chunkNumber") int chunkNumber,
                                               @RequestParam("totalChunks") int totalChunks) throws IOException {
         boolean isDone = chunkUploadService.chunkUpload(file, chunkNumber, totalChunks);
