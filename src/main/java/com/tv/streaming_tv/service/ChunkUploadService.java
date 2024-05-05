@@ -17,11 +17,13 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ChunkUploadService {
-    public boolean chunkUpload(MultipartFile file, int chunkNumber, int totalChunks) throws IOException {
+    public boolean chunkUpload(MultipartFile file, int chunkNumber, int totalChunks, String key) throws IOException {
         // 파일 업로드 위치
         String uploadDir = "video";
+        String tempDir = "video/" + key;  // 파일 조각 저장 경로
 
-        File dir = new File(uploadDir);
+
+        File dir = new File(tempDir);
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -29,7 +31,7 @@ public class ChunkUploadService {
         // 임시 저장 파일 이름
         String filename = file.getOriginalFilename() + ".part" + chunkNumber;
 
-        Path filePath = Paths.get(uploadDir, filename);
+        Path filePath = Paths.get(tempDir, filename);
         // 임시 저장
         Files.write(filePath, file.getBytes());
 
@@ -42,7 +44,7 @@ public class ChunkUploadService {
 
             // 임시 파일들을 하나로 합침
             for (int i = 0; i < totalChunks; i++) {
-                Path chunkFile = Paths.get(uploadDir, file.getOriginalFilename() + ".part" + i);
+                Path chunkFile = Paths.get(tempDir, file.getOriginalFilename() + ".part" + i);
                 Files.write(outputFile, Files.readAllBytes(chunkFile), StandardOpenOption.APPEND);
                 // 합친 후 삭제
                 Files.delete(chunkFile);
@@ -52,5 +54,11 @@ public class ChunkUploadService {
         } else {
             return false;
         }
+    }
+
+    public int getLastChunkNumber(String key) {
+        Path temp = Paths.get("video", key);
+        String[] list = temp.toFile().list();
+        return list == null ? 0 : Math.max(list.length-2, 0);
     }
 }
